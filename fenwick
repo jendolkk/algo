@@ -1,0 +1,50 @@
+template <typename T>
+class fenwick {
+ public:
+  fenwick(int _n) : n(_n), lg2(std::__lg(n)), data(_n) {}
+  
+  void add(int p, T v) {
+    assert(0 <= p && p < n);
+    for (p++; p <= n; p += p & -p) {
+      data[p - 1] += v;
+    }
+  }
+
+  T get(int p) {
+    return sum(++p);
+  }
+
+  T get(int l, int r) {
+    assert(0 <= l && l <= r && r <= n);
+    return sum(r) - sum(l);
+  }
+
+  int max_right(T bound) {
+    T s{};
+    int bin = 0;
+    for (int i = 1 << lg2; i > 0; i >>= 1) {
+      if (bin + i <= n) {
+        T ns = s;
+        ns += data[bin + i - 1];
+        if (!(bound < ns)) {
+          s = ns;
+          bin += i;
+        }
+      }
+    }
+    return bin - 1;
+  }
+
+ private:
+  int n, lg2;
+  std::vector<T> data;
+
+  T sum(int r) {
+    T s{};
+    for (; r > 0; r -= r & -r) {
+      s += data[r - 1];
+    }
+    return s;
+  }
+};
+

@@ -1,0 +1,256 @@
+template <class Info, class Tag = std::monostate>
+class SegmentTree {
+ public:
+  static constexpr bool lazy = !std::is_same_v<Tag, std::monostate>;
+  
+  explicit SegmentTree(int _n) : n(_n) {
+    sz = 1 << std::__lg(n);
+    if (sz < n) sz <<= 1;
+    ht = __builtin_ctz(sz);
+    info = std::vector<Info>(sz * 2);
+    if constexpr (lazy) tag = std::vector<Tag>(sz * 2);
+  }
+ 
+  template <typename T>
+  explicit SegmentTree(const std::vector<T>& a) : SegmentTree(int(a.size())) {
+    for (int i = 0; i < n; i++) info[i + sz] = Info{a[i]};
+    for (int i = (sz + n - 1) >> 1; i > 0; i--) pull(i);
+  }
+ 
+  template <class T>
+  void modify(int p, const T& t) {
+    assert(0 <= p && p < n);
+    p += sz;
+    for (int i = ht; i > 0; i--) push(p >> i);
+    if constexpr (lazy && std::is_same_v<T, Tag>) {
+      info[p].apply(t);
+    } else {
+      static_assert(std::is_same_v<T, Info>);
+      info[p] = t;
+    }
+    for (int i = 1; i <= ht; i++) pull(p >> i);
+  }
+ 
+  Info get(int p) {
+    assert(0 <= p && p < n);
+    p += sz;
+    for (int i = ht; i > 0; i--) push(p >> i);
+    return info[p];
+  }
+ 
+  template <class T>
+  void modify(int l, int r, const T& t) {
+    static_assert(std::is_same_v<T, Tag>);
+    assert(0 <= l && l <= r && r <= n);
+    if (l == r) return;
+    l += sz; r += sz;
+    for (int i = ht; i > 0; i--) {
+      if ((l >> i << i) != l) push(l >> i);
+      if ((r >> i << i) != r) push(r >> i);
+    }
+    for (int ll = l, rr = r; ll < rr; ll >>= 1, rr >>= 1) {
+      if (ll & 1) apply(ll++, t);
+      if (rr & 1) apply(--rr, t);
+    }
+    for (int i = 1; i <= ht; i++) {
+      if ((l >> i << i) != l) pull(l >> i);
+      if ((r >> i << i) != r) pull(r >> i);
+    }
+  };
+ 
+  Info get(int l, int r) {
+    if (l + 1 == r) return get(l);
+    assert(0 <= l && l <= r && r <= n);
+    if (l == r) return Info{};
+    l += sz; r += sz;
+    for (int i = ht; i > 0; i--) {
+      if ((l >> i << i) != l) push(l >> i);
+      if ((r >> i << i) != r) push(r >> i);
+    }
+    Info lres{}, rres{};
+    for (; l < r; l >>= 1, r >>= 1) {
+      if (l & 1) lres = lres + info[l++];
+      if (r & 1) rres = info[--r] + rres;
+    }
+    return lres + rres;
+  }
+ 
+  static constexpr std::array<int, 2> from_l_to_r {0, 1};
+  static constexpr std::array<int, 2> from_r_to_l {1, 0};
+ 
+  template <class F>
+  int dive(int id, const array<int, 2>& mode, F f) {
+    while (id < sz) {
+      push(id);
+      id <<= 1;
+      for (int i : mode) {
+        if (f(info[id + i])) {
+          id += i;
+          break;
+        }
+      }
+    }
+    return id - sz;
+  }
+  
+  template <class F>
+  int find_first(int l, int r, F f) {
+    assert(0 <= l && l < r && r <= n);
+    l += sz; r += sz;
+    for (int i = ht; i > 0; i--) {
+      if ((l >> i << i) != l) push(l >> i);
+      if ((r >> i << i) != r) push(r >> i);
+    }
+    int l_cur = ht;
+    while ((r >> (ht - l_cur)) != l) {
+      while ((l & 1) == 0 && (l >> 1) != (r >> (ht - l_cur + 1))) {
+        l >>= 1;
+        l_cur--;
+      }
+      if (f(info[l])) {
+        int ans = dive(l, from_l_to_r, f);
+        return ans >= r - sz ? -1 : ans;
+      }
+      l++;
+    }
+    if (r == sz * 2 || !f(info[l])) return -1;
+    int ans = dive(l, from_l_to_r, f);
+    return ans >= r - sz ? -1 : ans;
+  }
+ 
+  template <class F>
+  int find_last(int l, int r, F f) {
+    assert(0 <= l && l < r && r <= n);
+    int old_r = r;
+    l += sz; r += sz;
+    for (int i = ht; i > 0; i--) {
+      if ((l >> i << i) != l) push(l >> i);
+      if ((r >> i << i) != r) push(r >> i);
+    }
+    l--; r--;
+    int r_cur = ht;
+    while ((l >> (ht - r_cur)) != r) {
+      while ((r & 1) == 1 && (r >> 1) != (l >> (ht - r_cur + 1))) {
+        r >>= 1;
+        r_cur--;
+      }
+      if (f(info[r])) {
+        int ans = dive(r, from_r_to_l, f);
+        return ans <= l - sz ? -1 : ans;
+      }
+      r--;
+    }
+    if (l == sz - 1 || !f(info[r])) return -1;
+    int ans = dive(r, from_r_to_l, f);
+    return ans <= l - sz ? -1 : ans;
+  }
+  
+  template <class G>
+  int max_right(int l, G g) {
+    assert(0 <= l && l <= n);
+    assert(g(Info{}));
+    if (l == n) return n;
+    l += sz;
+    for (int i = ht; i >= 1; i--) push(l >> i);
+    Info sm = Info{};
+    do {
+      while (l % 2 == 0) l >>= 1;
+      if (!g(sm + info[l])) {
+        while (l < sz) {
+          push(l);
+          l = (2 * l);
+          if (g(sm + info[l])) {
+            sm = sm + info[l];
+            l++;
+          }
+        }
+        return l - sz;
+      }
+      sm = sm + info[l];
+      l++;
+    } while ((l & -l) != l);
+    return n;
+  }
+  
+  template <class G>
+  int min_left(int r, G g) {
+    assert(0 <= r && r <= n);
+    assert(g(Info{}));
+    if (r == 0) return 0;
+    r += sz;
+    for (int i = ht; i >= 1; i--) push((r - 1) >> i);
+    Info sm = Info{};
+    do {
+      r--;
+      while (r > 1 && (r % 2)) r >>= 1;
+      if (!g(info[r] + sm)) {
+        while (r < sz) {
+          push(r);
+          r = (2 * r + 1);
+          if (g(info[r] + sm)) {
+            sm = info[r] + sm;
+            r--;
+          }
+        }
+        return r + 1 - sz;
+      }
+      sm = info[r] + sm;
+    } while ((r & -r) != r);
+    return 0;
+  }
+ private:
+  int n, sz, ht;
+  std::vector<Info> info;
+  std::vector<Tag> tag;
+
+  void pull(int id) {
+    info[id] = info[id << 1] + info[id << 1 | 1];
+  }
+ 
+  void apply(int id, const Tag& t) {
+    if constexpr (lazy) {
+      tag[id].apply(t);
+      info[id].apply(t);
+    }
+  }
+ 
+  void push(int id) {
+    if constexpr (lazy) {
+      if (tag[id].empty()) return;
+      apply(id << 1, tag[id]);
+      apply(id << 1 | 1, tag[id]);
+      tag[id] = Tag{};
+    }
+  }
+};
+
+struct Tag {
+  int64_t add = 0;
+
+  void apply(const Tag& v) {
+    add += v.add;
+  }
+  
+  bool empty() {
+    return add == 0;
+  }
+};
+
+struct Info {
+  int64_t ans = 0;
+  int len = 0;
+
+  void apply(const Tag& v) {
+    ans += v.add * len;
+  }
+};
+
+Info operator+(const Info& a, const Info& b) {
+  return Info{
+    a.ans + b.ans,
+    a.len + b.len,
+  };
+}
+
+using segtree = SegmentTree<Info, Tag>;
+

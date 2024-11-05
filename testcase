@@ -1,0 +1,5 @@
+int tc;
+cin >> tc;
+while (tc--) {
+  ${1:}
+}

@@ -1,0 +1,94 @@
+namespace FFT {
+using db = double;
+
+constexpr db PI = std::acosl(-1);
+
+struct num {
+  db x = 0;
+  db y = 0;
+};
+num operator+(const num& a, const num& b) { return {a.x + b.x, a.y + b.y }; }
+num operator-(const num& a, const num& b) { return {a.x - b.x, a.y - b.y }; }
+num operator*(const num& a, const num& b) { return {a.x * b.x - a.y * b.y, a.x * b.y + a.y * b.x}; }
+
+int base = 1;
+std::vector<int> rev;
+std::vector<num> roots = {{0, 0}, {1, 0}};
+
+void ensure_base(int nbase) {
+  if (nbase <= base) {
+    return;
+  }
+  rev.resize(1 << nbase);
+  for (int i = 0; i < (1 << nbase); i++) {
+    rev[i] = (rev[i >> 1] >> 1) + ((i & 1) << (nbase - 1));
+  }
+  roots.resize(1 << nbase);
+  while (base < nbase) {
+    db angle = 2 * PI / (1 << (base + 1));
+//      num z(cos(angle), sin(angle));
+    for (int i = 1 << (base - 1); i < (1 << base); i++) {
+      roots[i << 1] = roots[i];
+//        roots[(i << 1) + 1] = roots[i] * z;
+      db angle_i = angle * (2 * i + 1 - (1 << base));
+      roots[(i << 1) + 1] = {std::cos(angle_i), std::sin(angle_i)};
+    }
+    base++;
+  }
+}
+
+void fft(std::vector<num>& a) {
+  int n = a.size();
+  int zeros = __builtin_ctz(n);
+  ensure_base(zeros);
+  int shift = base - zeros;
+  for (int i = 0; i < n; i++) {
+    if (i < (rev[i] >> shift)) {
+      std::swap(a[i], a[rev[i] >> shift]);
+    }
+  }
+  for (int k = 1; k < n; k <<= 1) {
+    for (int i = 0; i < n; i += k << 1) {
+      for (int j = 0; j < k; j++) {
+        num z = a[i + j + k] * roots[j + k];
+        a[i + j + k] = a[i + j] - z;
+        a[i + j] = a[i + j] + z;
+      }
+    }
+  }
+}
+
+std::vector<num> A, B;
+
+template <typename T>
+vector<T> mul(std::vector<T> &a, std::vector<T> &b) {
+  int need = a.size() + b.size() - 1;
+  int nbase = 1;
+  while ((1 << nbase) < need) nbase++;
+  ensure_base(nbase);
+  int sz = 1 << nbase;
+  if (sz > int(A.size())) A.resize(sz);
+  if (sz > int(B.size())) B.resize(sz);
+  for (int i = 0; i < sz; i++) {
+    A[i].x = (i < int(a.size()) ? a[i] : 0);
+    A[i].y = 0;
+    B[i].x = (i < int(b.size()) ? b[i] : 0);
+    B[i].y = 0;
+  }
+  fft(A);
+  fft(B);
+  for (int i = 0; i < sz; i++) {
+    A[i] = A[i] * B[i];
+  }
+  std::reverse(A.begin() + 1, A.end());
+  fft(A);
+  std::vector<T> res(sz);
+  for (int i = 0; i < sz; i++) {
+    res[i] = std::round(A[i].x / sz);
+  }
+  res.resize(need);
+  return res;
+}
+} // namespace FFT
+using namespace FFT;
+
