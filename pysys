@@ -8,7 +8,8 @@ from copy import deepcopy
 import random
 from functools import cache
 from sortedcontainers import SortedList
-sys.setrecursionlimit(111111)
+sys.set_int_max_str_digits(int(1e7))
+sys.setrecursionlimit(int(1e7))
 
 input = lambda: sys.stdin.readline().strip()
 
