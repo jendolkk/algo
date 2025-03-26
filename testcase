@@ -1,5 +1,5 @@
-int tc;
-cin >> tc;
-while (tc--) {
+int test_nums;
+cin >> test_nums;
+for (int tc = 1; tc <= test_nums; tc++) {
   ${1:}
 }
