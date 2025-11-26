@@ -1,7 +1,5 @@
 #include <bits/stdc++.h>
 
-using namespace std;
-
 using u32 = std::uint32_t;
 using i64 = std::int64_t;
 using u64 = std::uint64_t;
@@ -16,8 +14,8 @@ using u128 = unsigned __int128;
 #endif
 
 int main() {
-  ios::sync_with_stdio(false);
-  cin.tie(nullptr);
+  std::ios::sync_with_stdio(false);
+  std::cin.tie(nullptr);
   
 
   
