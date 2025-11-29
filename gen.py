@@ -6,8 +6,8 @@ snippets = {}
 
 for subdir in os.walk('.'):
   # print(subdir)
-  # if subdir[0] == '.' or '.git' in subdir[0]:
-  #   continue
+  if '.git' in subdir[0]:
+    continue
   # for filename in subdir[2]:
     # name, extension = filename.split('.')
   for name in subdir[2]:
