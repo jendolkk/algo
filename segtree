@@ -79,7 +79,7 @@ class SegmentTree {
   static constexpr std::array<int, 2> from_r_to_l {1, 0};
  
   template <class F>
-  int dive(int id, const std::array<int, 2>& mode, F f) {
+  int dive(int id, const std::array<int, 2> mode, F f) {
     while (id < sz) {
       push(id);
       id <<= 1;
