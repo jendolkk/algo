@@ -69,7 +69,7 @@ struct maxflow {
     for (int i = cur[u]; i < g[u].size() && flow < limit; cur[u] = i++) {
       auto &[from, to, c, f] = edges[g[u][i]];
       if (d[to] == d[u] + 1 && c - f > eps) {
-        T temp = dfs(to, min(c - f, limit - flow));
+        T temp = dfs(to, std::min(c - f, limit - flow));
         f += temp, edges[g[u][i] ^ 1].f -= temp, flow += temp;
         if (temp <= eps) d[to] = -1;
       }
@@ -84,7 +84,7 @@ struct maxflow {
     return flow;
   }
 
-  vector<bool> mc() {
+  std::vector<int> mc() {
     mf();
     std::vector<bool> ret(n);
     for (int i = 0; i < n; i++) {
