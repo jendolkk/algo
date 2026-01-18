@@ -10,10 +10,6 @@ class fenwick {
     }
   }
 
-  T get(int p) {
-    return sum(++p);
-  }
-
   T get(int l, int r) {
     assert(0 <= l && l <= r && r <= n);
     return sum(r) - sum(l);
