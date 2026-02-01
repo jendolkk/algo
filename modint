@@ -10,44 +10,35 @@ constexpr T power(T a, int64_t b) {
   return res;
 }
 
-template <int md>
+template <uint32_t md>
 class modint {
  public:
-  constexpr modint() : v() {}
-  constexpr modint(int64_t t) : v(norm(t)) {}
-  static constexpr int norm(const int64_t x) {
-    if (-md <= x && x < md) return static_cast<int>(x >= 0 ? x : x + md);
-    else if (int t = static_cast<int>(x % md); t >= 0) return t;
-    else return t + md;
-  }
+  constexpr modint() : v(0) {}
+  constexpr modint(int64_t t) { int64_t x = t % md; v = x < 0 ? x + md : x; }
   template <typename T> constexpr explicit operator T() { return static_cast<T>(v); }
-  constexpr modint operator-() const { return modint(-v); }
-  const int& operator()() const { return v; }
-  constexpr int val() const { return v; }
+  constexpr modint operator-() const { return modint(0) - v; }
+  constexpr uint32_t operator()() const { return v; }
+  constexpr uint32_t val() const { return v; }
   constexpr modint inv() const { return power(*this, md - 2); }
-  constexpr modint& operator+=(const modint& b) { if ((v += b.v) >= md) v -= md; return *this; }
-  constexpr modint& operator-=(const modint& b) { if ((v -= b.v) < 0) v += md; return *this; }
-  constexpr modint& operator*=(const modint& b) { v = norm(static_cast<int64_t>(v) * b.v); return *this; }
+  constexpr modint& operator*=(const modint& b) { v = uint64_t(v) * b.v % md; return *this; }
+  constexpr modint& operator+=(const modint& b) { v += b.v; if (v >= md) v -= md; return *this; }
+  constexpr modint& operator-=(const modint& b) { v -= b.v; if (v >= md) v += md; return *this; }
   constexpr modint& operator/=(const modint& b) { return *this *= b.inv(); }
-  constexpr friend modint operator+(const modint& a, const modint& b) { return modint(a) += b; }
-  constexpr friend modint operator-(const modint& a, const modint& b) { return modint(a) -= b; }
-  constexpr friend modint operator*(const modint& a, const modint& b) { return modint(a) *= b; }
-  constexpr friend modint operator/(const modint& a, const modint& b) { return modint(a) /= b; }
-  constexpr modint& operator++() { return *this += 1; }
-  constexpr modint& operator--() { return *this -= 1; }
-  constexpr modint operator++(int) { modint a(*this); *this += 1; return a; }
-  constexpr modint operator--(int) { modint a(*this); *this -= 1; return a; }
+  constexpr friend modint operator+(modint a, const modint& b) { return a += b; }
+  constexpr friend modint operator-(modint a, const modint& b) { return a -= b; }
+  constexpr friend modint operator*(modint a, const modint& b) { return a *= b; }
+  constexpr friend modint operator/(modint a, const modint& b) { return a /= b; }
   constexpr friend bool operator==(const modint& a, const modint& b) { return a.v == b.v; }
   constexpr friend bool operator!=(const modint& a, const modint& b) { return a.v != b.v; }
   constexpr friend bool operator<(const modint& a, const modint& b) { return a.v < b.v; }
   constexpr friend const int& abs(const modint& a) { return a(); }
-  template <typename T> friend T& operator>>(T& stream, modint& a) { int64_t t; stream >> t; a.v = a.norm(t); return stream; }
-  template <typename T> friend T& operator<<(T& stream, const modint& a) { return stream << a(); }
+  template <typename T> friend T& operator>>(T& stream, modint& a) { int64_t t; stream >> t; a = modint(t); return stream; }
+  template <typename T> friend T& operator<<(T& stream, const modint& a) { return stream << a.v; }
  private:
-  int v;
+  uint32_t v;
 };
 
-constexpr int md3 = 998244353;
-constexpr int md7 = 1e9 + 7;
+constexpr uint32_t md3 = 998244353;
+constexpr uint32_t md7 = 1e9 + 7;
 using Mint = modint<md>;
 
