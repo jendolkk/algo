@@ -5,20 +5,21 @@ import sys
 snippets = {}
 
 for subdir in os.walk('.'):
-  # print(subdir)
   if '.git' in subdir[0]:
     continue
-  # for filename in subdir[2]:
-    # name, extension = filename.split('.')
-  for name in subdir[2]:
-    if '.' in name:
+  print(subdir)
+  for filename in subdir[2]:
+    name, extension = filename.split('.')
+  # for name in subdir[2]:
+    # if '.' in name:
+    if extension not in ("cpp", "py"):
       continue
 
     if name in snippets:
       print(f'error: duplicate snippet {name}', file=sys.stderr)
       exit(0)
 
-    path = subdir[0] + '/' + name
+    path = subdir[0] + '/' + filename
     with open(path, 'r') as f:
       snippet = {
         "prefix": name,

@@ -10,15 +10,17 @@ constexpr T power(T a, int64_t b) {
   return res;
 }
 
-template <uint32_t md>
+template <auto md>
 class modint {
  public:
+  using type = std::decay_t<decltype(md)>;
+  static_assert(std::is_integral_v<type>);
   constexpr modint() : v(0) {}
   constexpr modint(int64_t t) { int64_t x = t % md; v = x < 0 ? x + md : x; }
   template <typename T> constexpr explicit operator T() { return static_cast<T>(v); }
   constexpr modint operator-() const { return modint(0) - v; }
-  constexpr uint32_t operator()() const { return v; }
-  constexpr uint32_t val() const { return v; }
+  constexpr type operator()() const { return v; }
+  constexpr type val() const { return v; }
   constexpr modint inv() const { return power(*this, md - 2); }
   constexpr modint& operator*=(const modint& b) { v = uint64_t(v) * b.v % md; return *this; }
   constexpr modint& operator+=(const modint& b) { v += b.v; if (v >= md) v -= md; return *this; }
@@ -35,7 +37,7 @@ class modint {
   template <typename T> friend T& operator>>(T& stream, modint& a) { int64_t t; stream >> t; a = modint(t); return stream; }
   template <typename T> friend T& operator<<(T& stream, const modint& a) { return stream << a.v; }
  private:
-  uint32_t v;
+  type v;
 };
 
 constexpr uint32_t md3 = 998244353;
