@@ -86,7 +86,7 @@ struct maxflow {
 
   std::vector<int> mc() {
     mf();
-    std::vector<bool> ret(n);
+    std::vector<int> ret(n);
     for (int i = 0; i < n; i++) {
       ret[i] = (d[i] != -1);
     }
