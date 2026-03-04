@@ -1,12 +1,5 @@
 #include <bits/stdc++.h>
 
-using u32 = uint32_t;
-using i64 = int64_t;
-using u64 = uint64_t;
-using f64 = double;
-using i128 = __int128;
-using u128 = unsigned __int128;
-
 #ifdef LOCAL
 #include "debug.h"
 #else
