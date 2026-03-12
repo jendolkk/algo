@@ -2,7 +2,7 @@ template <typename T>
 std::vector<int> suffix_array(const T& s) {
   int n = s.size();
   std::vector<int> sa(n), rk(n), cnt(n), rk_by_second(n);
-  if constexpr (std::is_same<T, string>::value) {
+  if constexpr (std::is_same<T, std::string>::value) {
     std::vector<int> cnt(128);
     for (auto i : s) {
       cnt[i]++;
