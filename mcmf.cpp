@@ -1,6 +1,6 @@
 template <typename T, typename U>
 struct mcmf {
-  static constexpr T eps = (T) 1e-9;
+  static constexpr T eps = std::numeric_limits<T>::epsilon();
 
   struct edge {
     int from;
