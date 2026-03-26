@@ -1,6 +1,6 @@
 template <typename T>
 std::vector<int> topsort(const std::vector<std::vector<T>>& g) {
-  int n = g.size();
+  int n = int(g.size());
   std::vector<int> deg(n);
   std::vector<int> q;
   for (const auto& x : g) {
@@ -19,7 +19,7 @@ std::vector<int> topsort(const std::vector<std::vector<T>>& g) {
       q.push_back(i);
     }
   }
-  for (int i = 0; i < q.size(); i++) {
+  for (int i = 0; i < int(q.size()); i++) {
     for (const auto j : g[q[i]]) {
       int v;
       if constexpr (std::integral<T>) {

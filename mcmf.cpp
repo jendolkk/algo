@@ -8,20 +8,21 @@ struct mcmf {
     T c;
     T f;
     U cost;
-    edge(int _from, int _to, T _c, T _f, U _cost): 
+    edge(int _from, int _to, T _c, T _f, U _cost):
       from(_from), to(_to), c(_c), f(_f), cost(_cost) {}
   };
 
   int n, s, t;
   std::vector<edge> edges;
   std::vector<std::vector<int>> g;
-  std::vector<int> q, pe;
+  std::vector<int> q;
+  std::vector<int> pe;
   std::vector<bool> in_queue;
   std::vector<U> dist;
   T flow = 0;
   U cost = 0;
 
-  mcmf() {}
+  mcmf() = default;
 
   mcmf(int _n, int _s, int _t) {
     init(_n, _s, _t);

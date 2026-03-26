@@ -1,16 +1,18 @@
 template <typename T>
 struct vcc {
-  const vector<vector<T>>& g;
-  vector<int> pos, stk;
-  vector<vector<int>> res;
-  vector<bool> cut;
-  
-  vcc(const vector<vector<T>>& t): g(t), pos(t.size(), -1), cut(t.size()) {
+  const std::vector<std::vector<T>>& g;
+  std::vector<int> pos;
+  std::vector<int> stk;
+  std::vector<std::vector<int>> res;
+  std::vector<bool> cut;
+
+  vcc(const std::vector<std::vector<T>>& t): g(t), pos(int(t.size()), -1), cut(int(t.size())) {
     run();
   }
-  
+
   int dfs(int u, int p) {
-    int low = pos[u] = stk.size(), son = 0;
+    int low = pos[u] = int(stk.size());
+    int son = 0;
     stk.push_back(u);
     for (const auto j : g[u]) {
       int v;
@@ -21,10 +23,11 @@ struct vcc {
       }
       if (v != p) {
         if (pos[v] != -1) {
-          low = min(low, pos[v]);
+          low = std::min(low, pos[v]);
         } else {
-          int cur = stk.size(), low_v = dfs(v, u);
-          low = min(low, low_v);
+          int cur = int(stk.size());
+          int low_v = dfs(v, u);
+          low = std::min(low, low_v);
           if (low_v >= pos[u] && (p != -1 || son++)) {
             cut[u] = true;
             res.emplace_back(stk.begin() + cur, stk.end());
@@ -36,9 +39,9 @@ struct vcc {
     }
     return low;
   }
-  
+
   void run() {
-    for (int i = 0; i < g.size(); i++) {
+    for (int i = 0; i < int(g.size()); i++) {
       if (pos[i] == -1) {
         dfs(i, -1);
         res.emplace_back(move(stk));

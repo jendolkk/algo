@@ -4,7 +4,8 @@ std::vector<std::vector<int>> ecc(const std::vector<std::vector<T>>& g) {
   std::vector<int> pos(n, -1), stk;
   std::vector<vector<int>> res;
   auto dfs = [&](auto self, int u, int p) -> int {
-    int low = pos[u] = stk.size(), counter = 0;
+    int low = pos[u] = int(stk.size());
+    int counter = 0;
     stk.push_back(u);
     for (const auto j : g[u]) {
       int v;

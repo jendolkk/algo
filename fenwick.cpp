@@ -2,7 +2,7 @@ template <typename T>
 class fenwick {
  public:
   fenwick(int _n) : n(_n), lg2(std::__lg(n)), data(_n) {}
-  
+
   void add(int p, T v) {
     assert(0 <= p && p < n);
     for (p++; p <= n; p += p & -p) {
@@ -32,7 +32,8 @@ class fenwick {
   }
 
  private:
-  int n, lg2;
+  int n;
+  int lg2;
   std::vector<T> data;
 
   T sum(int r) {

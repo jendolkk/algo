@@ -1,7 +1,11 @@
 template <typename T, class Compare = std::less<T>>
 class CartesianTree {
  public:
-  std::vector<int> ls, rs, sz, lb, rb;
+  std::vector<int> ls;
+  std::vector<int> rs;
+  std::vector<int> sz;
+  std::vector<int> lb;
+  std::vector<int> rb;
   int root = -1, n;
 
   CartesianTree(const std::vector<T>& a, Compare comp = Compare())

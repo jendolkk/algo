@@ -15,7 +15,7 @@ class modint {
  public:
   using type = std::decay_t<decltype(md)>;
   static_assert(std::is_integral_v<type>);
-  constexpr modint() : v(0) {}
+  constexpr modint() = default;
   constexpr modint(int64_t t) { int64_t x = t % md; v = x < 0 ? x + md : x; }
   template <typename T> constexpr explicit operator T() { return static_cast<T>(v); }
   constexpr modint operator-() const { return modint(0) - v; }

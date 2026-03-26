@@ -2,7 +2,7 @@ template <class Info, class Tag = std::monostate>
 class SegmentTree {
  public:
   static constexpr bool lazy = !std::is_same_v<Tag, std::monostate>;
-  
+
   explicit SegmentTree(int _n) : n(_n) {
     sz = 1 << std::__lg(n);
     if (sz < n) sz <<= 1;
@@ -10,13 +10,13 @@ class SegmentTree {
     info = std::vector<Info>(sz * 2);
     if constexpr (lazy) tag = std::vector<Tag>(sz * 2);
   }
- 
+
   template <typename T>
   explicit SegmentTree(const std::vector<T>& a) : SegmentTree(int(a.size())) {
     for (int i = 0; i < n; i++) info[i + sz] = Info{a[i]};
     for (int i = (sz + n - 1) >> 1; i > 0; i--) pull(i);
   }
- 
+
   template <class T>
   void modify(int p, const T& t) {
     assert(0 <= p && p < n);
@@ -30,14 +30,14 @@ class SegmentTree {
     }
     for (int i = 1; i <= ht; i++) pull(p >> i);
   }
- 
+
   Info get(int p) {
     assert(0 <= p && p < n);
     p += sz;
     for (int i = ht; i > 0; i--) push(p >> i);
     return info[p];
   }
- 
+
   template <class T>
   void modify(int l, int r, const T& t) {
     static_assert(std::is_same_v<T, Tag>);
@@ -57,7 +57,7 @@ class SegmentTree {
       if ((r >> i << i) != r) pull(r >> i);
     }
   };
- 
+
   Info get(int l, int r) {
     if (l + 1 == r) return get(l);
     assert(0 <= l && l <= r && r <= n);
@@ -74,10 +74,10 @@ class SegmentTree {
     }
     return lres + rres;
   }
- 
+
   static constexpr std::array<int, 2> from_l_to_r {0, 1};
   static constexpr std::array<int, 2> from_r_to_l {1, 0};
- 
+
   template <class F>
   int dive(int id, const std::array<int, 2> mode, F f) {
     while (id < sz) {
@@ -92,7 +92,7 @@ class SegmentTree {
     }
     return id - sz;
   }
-  
+
   template <class F>
   int find_first(int l, int r, F f) {
     assert(0 <= l && l < r && r <= n);
@@ -117,7 +117,7 @@ class SegmentTree {
     int ans = dive(l, from_l_to_r, f);
     return ans >= r - sz ? -1 : ans;
   }
- 
+
   template <class F>
   int find_last(int l, int r, F f) {
     assert(0 <= l && l < r && r <= n);
@@ -144,7 +144,7 @@ class SegmentTree {
     int ans = dive(r, from_r_to_l, f);
     return ans <= l - sz ? -1 : ans;
   }
-  
+
   template <class G>
   int max_right(int l, G g) {
     assert(0 <= l && l <= n);
@@ -171,7 +171,7 @@ class SegmentTree {
     } while ((l & -l) != l);
     return n;
   }
-  
+
   template <class G>
   int min_left(int r, G g) {
     assert(0 <= r && r <= n);
@@ -199,21 +199,23 @@ class SegmentTree {
     return 0;
   }
  private:
-  int n, sz, ht;
+  int n;
+  int sz;
+  int ht;
   std::vector<Info> info;
   std::vector<Tag> tag;
 
   void pull(int id) {
     info[id] = info[id << 1] + info[id << 1 | 1];
   }
- 
+
   void apply(int id, const Tag& t) {
     if constexpr (lazy) {
       tag[id].apply(t);
       info[id].apply(t);
     }
   }
- 
+
   void push(int id) {
     if constexpr (lazy) {
       if (tag[id].empty()) return;
@@ -230,7 +232,7 @@ struct Tag {
   void apply(const Tag& v) {
     add += v.add;
   }
-  
+
   bool empty() {
     return add == 0;
   }

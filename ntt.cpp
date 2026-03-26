@@ -1,6 +1,7 @@
 namespace NTT {
 
-int max_base = 0, base = 0;
+int max_base = 0;
+int base = 0;
 Mint root;
 std::vector<int> rev;
 std::vector<Mint> roots;
@@ -66,7 +67,7 @@ void fft(std::vector<Mint>& a) {
     }
   }
 }
-  
+
 std::vector<Mint> mul(std::vector<Mint> a, std::vector<Mint> b) {
   int need = (int) a.size() + (int) b.size() - 1;
   int nbase = 0;

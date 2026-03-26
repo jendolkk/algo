@@ -2,15 +2,17 @@ template <typename T>
 class scc {
  public:
   const std::vector<std::vector<T>>& g;
-  std::vector<int> stk, pos, bel;
+  std::vector<int> stk;
+  std::vector<int> pos;
+  std::vector<int> bel;
   std::vector<std::vector<int>> res;
-  
+
   scc(const std::vector<std::vector<T>>& t) : g(t), pos(t.size(), -1), bel(t.size(), -1) {
     run();
   }
-  
+
   int dfs(int u) {
-    int low = pos[u] = stk.size();
+    int low = pos[u] = int(stk.size());
     stk.push_back(u);
     for (const auto j : g[u]) {
       int v;
@@ -32,7 +34,7 @@ class scc {
     }
     return low;
   }
-  
+
   void run() {
     for (int i = 0; i < g.size(); i++) {
       if (pos[i] == -1) {

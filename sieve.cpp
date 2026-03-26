@@ -1,4 +1,5 @@
-std::vector<int> least, primes;
+std::vector<int> least;
+std::vector<int> primes;
 void sieve(int n) {
   least.assign(n + 1, 0);
   primes.clear();
