@@ -1,8 +1,14 @@
 struct hld {
   int n;
-  std::vector<int> parent, depth, sz, top, pos, end, order;
+  std::vector<int> parent;
+  std::vector<int> depth;
+  std::vector<int> sz;
+  std::vector<int> top;
+  std::vector<int> pos;
+  std::vector<int> end;
+  std::vector<int> order;
   std::vector<std::vector<int>> g;
-  
+
   hld(int _n) : n(_n), parent(n ,-1), depth(n), sz(n),
               top(n, -1), pos(n), end(n), g(n) {}
 
@@ -71,11 +77,11 @@ struct hld {
     }
     return depth[u] < depth[v] ? u : v;
   }
-  
+
   int dist(int u, int v) {
     return depth[u] + depth[v] - 2 * depth[lca(u, v)];
   }
-  
+
   int jump(int u, int k) {
     if (depth[u] < k) {
       return -1;

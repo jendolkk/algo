@@ -10,18 +10,24 @@ struct maxflow {
     edge(int _from, int _to, T _c, T _f): from(_from), to(_to), c(_c), f(_f) {}
   };
 
-  int n, s, t;
+  int n;
+  int s;
+  int t;
   std::vector<edge> edges;
   std::vector<std::vector<int>> g;
-  std::vector<int> d, cur, q;
+  std::vector<int> d;
+  std::vector<int> cur;
+  std::vector<int> q;
   T flow = 0;
 
-  maxflow() {}
+  maxflow() = default;
 
   maxflow(int _n, int _s, int _t) {
     init(_n, _s, _t);
   }
 
+  // i have forgot why add this func ...
+  // if it is useful in some problems, it should be assign instead of resize ?
   void init() {
     d.resize(n);
     q.resize(n);
@@ -36,9 +42,9 @@ struct maxflow {
   }
 
   void add(int u, int v, T forward, T backward) {
-    g[u].push_back((int) edges.size());
+    g[u].push_back(int(edges.size()));
     edges.emplace_back(u, v, forward, 0);
-    g[v].push_back((int) edges.size());
+    g[v].push_back(int(edges.size()));
     edges.emplace_back(v, u, backward, 0);
   }
 

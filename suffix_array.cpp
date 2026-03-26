@@ -1,8 +1,11 @@
 template <typename T>
 std::vector<int> suffix_array(const T& s) {
   int n = s.size();
-  std::vector<int> sa(n), rk(n), cnt(n), rk_by_second(n);
-  if constexpr (std::is_same<T, std::string>::value) {
+  std::vector<int> sa(n);
+  std::vector<int> rk(n);
+  std::vector<int> cnt(n);
+  std::vector<int> rk_by_second(n);
+  if constexpr (std::is_same_v<T, std::string>) {
     std::vector<int> cnt(128);
     for (auto i : s) {
       cnt[i]++;
@@ -52,7 +55,7 @@ std::vector<int> suffix_array(const T& s) {
 
 template <typename T>
 std::vector<int> build_lcp(const T& s, const std::vector<int>& sa) {
-  int n = s.size();
+  int n = int(s.size());
   std::vector<int> rk(n);
   for (int i = 0; i < n; i++) {
     rk[sa[i]] = i;
