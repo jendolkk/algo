@@ -40,7 +40,7 @@ class modint {
   type v;
 };
 
-constexpr uint32_t md3 = 998244353;
-constexpr uint32_t md7 = 1e9 + 7;
+[[maybe_unused]] constexpr uint32_t md3 = 998244353;
+[[maybe_unused]] constexpr uint32_t md7 = 1e9 + 7;
 using Mint = modint<md>;
 
