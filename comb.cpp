@@ -1,11 +1,11 @@
 std::vector<Mint> fact{1};
 std::vector<Mint> inv_fact{1};
- 
+
 Mint C(int n, int k) {
   if (k < 0 || k > n) {
     return 0;
   }
-  if (fact.size() <= n) {
+  if (int(fact.size()) <= n) {
     int m = fact.size();
     int new_sz = n + n / 2 + 1;
     fact.resize(new_sz);
