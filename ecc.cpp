@@ -1,8 +1,9 @@
 template <typename T>
 std::vector<std::vector<int>> ecc(const std::vector<std::vector<T>>& g) {
-  int n = g.size();
-  std::vector<int> pos(n, -1), stk;
-  std::vector<vector<int>> res;
+  int n = int(g.size());
+  std::vector<int> pos(n, -1);
+  std::vector<int> stk;
+  std::vector<std::vector<int>> res;
   auto dfs = [&](auto self, int u, int p) -> int {
     int low = pos[u] = int(stk.size());
     int counter = 0;

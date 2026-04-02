@@ -1,7 +1,8 @@
 namespace FFT {
 using db = double;
 
-constexpr db PI = std::acosl(-1);
+// constexpr db PI = std::acosl(-1);
+constexpr db PI = std::numbers::pi_v<db>;
 
 struct num {
   db x = 0;
@@ -61,7 +62,7 @@ void fft(std::vector<num>& a) {
 std::vector<num> A, B;
 
 template <typename T>
-vector<T> mul(std::vector<T>& a, std::vector<T>& b) {
+std::vector<T> mul(std::vector<T>& a, std::vector<T>& b) {
   assert(!a.empty() && !b.empty());
   int need = a.size() + b.size() - 1;
   int nbase = 1;
