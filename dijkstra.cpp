@@ -1,6 +1,6 @@
 template <typename T>
 std::vector<T> dij(const std::vector<std::vector<std::pair<int, T>>>& g, int st) {
-  assert(0 <= st && st < g.size());
+  assert(0 <= st && st < int(g.size()));
   int n = int(g.size());
   std::vector<T> d(n, std::numeric_limits<T>::max());
   using pti = std::pair<T, int>;
