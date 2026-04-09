@@ -33,7 +33,7 @@ class modint {
   constexpr friend bool operator==(const modint& a, const modint& b) { return a.v == b.v; }
   constexpr friend bool operator!=(const modint& a, const modint& b) { return a.v != b.v; }
   constexpr friend bool operator<(const modint& a, const modint& b) { return a.v < b.v; }
-  constexpr friend const int& abs(const modint& a) { return a(); }
+  constexpr friend type abs(const modint& a) { return a(); }
   template <typename T> friend T& operator>>(T& stream, modint& a) { int64_t t; stream >> t; a = modint(t); return stream; }
   template <typename T> friend T& operator<<(T& stream, const modint& a) { return stream << a.v; }
  private:
