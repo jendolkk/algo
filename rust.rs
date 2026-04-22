@@ -53,3 +53,7 @@ macro_rules! debug {
         eprintln!("[{}:{}] {}", file!(), line!(), [$(format!("{} = {:?}", stringify!($arg), $arg)),*].join(", "));
     };
 }
+
+fn main() {
+
+}

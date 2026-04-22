@@ -12,7 +12,7 @@ for subdir in os.walk('.'):
     name, extension = filename.split('.')
   # for name in subdir[2]:
     # if '.' in name:
-    if extension not in ("cpp", "py"):
+    if extension not in ("cpp", "py", "rs"):
       continue
 
     if name in snippets:
