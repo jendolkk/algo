@@ -1,7 +1,7 @@
 #include <bits/stdc++.h>
 
 #ifdef LOCAL
-#include "debug.h"
+#define debug(args...) println(stderr, __FILE__ ":{}: ({}) = {}", __LINE__, #args, tuple(args))
 #else
 #define debug(...) ((void)0)
 #endif
